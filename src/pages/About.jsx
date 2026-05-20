@@ -131,7 +131,7 @@ export default function About() {
             className="text-center mb-14"
           >
             <motion.p variants={fadeUp} className="text-brand-primary font-semibold tracking-widest uppercase text-xs mb-2">Our Journey</motion.p>
-            <motion.h2 variants={fadeUp} className="section-heading">From Kathmandu to Fort Worth</motion.h2>
+            <motion.h2 variants={fadeUp} className="section-heading">From Kathmandu to Erina</motion.h2>
           </motion.div>
 
           <div className="relative">
