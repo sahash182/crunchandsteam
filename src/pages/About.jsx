@@ -17,12 +17,12 @@ const milestones = [
   {
     year: '2018',
     title: 'The Dream Begins in Kathmandu',
-    desc: 'Founder Suresh Tamang grows up watching his mother fold momos at dawn, dreaming of sharing the taste of home with the world.',
+    desc: 'Founders Arosha and Amir grow up with a deep love of food and culture, dreaming of sharing the taste of home with the world.',
   },
   {
     year: '2020',
     title: 'Landing in Australia',
-    desc: 'Suresh arrives on the Central Coast with a suitcase, his mother\'s recipe book, and an idea — what if you combined the best of Nepalese street food with Australian food culture?',
+    desc: 'Arosha and Amir arrive on the Central Coast with a shared vision, a family recipe book, and an idea — what if you combined the best of Nepalese street food with Australian food culture?',
   },
   {
     year: '2022',
@@ -44,7 +44,7 @@ const values = [
 ]
 
 const team = [
-  { name: 'Suresh Tamang',    role: 'Founder & CEO',    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80' },
+  { name: 'Arosha & Amir',    role: 'Founders & Co-CEOs',    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80' },
   { name: 'Rina Shrestha',    role: 'Head Chef',         image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80' },
   { name: 'Marcus Webb',      role: 'Operations Director', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80' },
   { name: 'Anjali Gurung',    role: 'Brand Manager',     image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&auto=format&fit=crop&q=80' },
@@ -85,7 +85,7 @@ export default function About() {
               Every momo that leaves our kitchen carries a story — of mountain mornings, family kitchens, and the scent of timur pepper in the air. Crunch & Steam was built on a simple belief: the best food in the world deserves to be shared beyond borders.
             </motion.p>
             <motion.p variants={fadeUp} className="text-white/65 text-base leading-relaxed">
-              Our founder Suresh Tamang grew up in Kathmandu, where momos are not just food — they're a ritual. When he arrived in Australia, he couldn't find a single restaurant that understood what real Nepalese flavors tasted like. So he built one.
+              Our founders Arosha and Amir grew up with a deep love of Nepalese cuisine, where momos are not just food — they're a ritual. When they arrived in Australia, they couldn't find a single restaurant that understood what real Nepalese flavors tasted like. So they built one.
             </motion.p>
           </motion.div>
         </div>
@@ -113,7 +113,7 @@ export default function About() {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="text-brand-primary font-semibold mt-6 tracking-wider text-sm uppercase"
           >
-            — Suresh Tamang, Founder
+            — Arosha & Amir, Founders
           </motion.p>
         </div>
       </section>
