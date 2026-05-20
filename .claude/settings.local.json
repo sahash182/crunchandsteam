@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "PowerShell($env:PATH)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\nodejs\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:APPDATA\\\\npm\" -ErrorAction SilentlyContinue | Select-Object -First 5; Get-ChildItem \"C:\\\\Users\\\\sahas\\\\AppData\\\\Roaming\\\\nvm\" -ErrorAction SilentlyContinue | Select-Object -First 5; \\(Get-Command node -ErrorAction SilentlyContinue\\).Source)",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\sahas\\\\OneDrive\\\\Desktop\\\\CrunchnSteam\\\\src\\\\assets\")",
+      "Bash(Out-Null)",
+      "Bash(Copy-Item \"C:\\\\Users\\\\sahas\\\\OneDrive\\\\Desktop\\\\CrunchnSteam\\\\crunch&steam-logo.jpg\" \"C:\\\\Users\\\\sahas\\\\OneDrive\\\\Desktop\\\\CrunchnSteam\\\\src\\\\assets\\\\logo.jpg\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\sahas\\\\OneDrive\\\\Desktop\\\\CrunchnSteam\\\\src\\\\assets\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\sahas\\\\OneDrive\\\\Desktop\\\\CrunchnSteam\\\\crunch&steam-logo.jpg\" \"C:\\\\Users\\\\sahas\\\\OneDrive\\\\Desktop\\\\CrunchnSteam\\\\src\\\\assets\\\\logo.jpg\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}
