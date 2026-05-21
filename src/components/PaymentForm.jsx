@@ -24,7 +24,7 @@ export default function PaymentForm({ total, onSuccess, onBack }) {
       setError(stripeError.message)
       setLoading(false)
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-      onSuccess()
+      onSuccess(paymentIntent.id)
     }
   }
 

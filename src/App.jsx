@@ -9,6 +9,7 @@ import Menu from './pages/Menu'
 import About from './pages/About'
 import Locations from './pages/Locations'
 import Order from './pages/Order'
+import Admin from './pages/Admin'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -18,20 +19,32 @@ function ScrollToTop() {
   return null
 }
 
-export default function App() {
+function AppLayout() {
+  const { pathname } = useLocation()
+  const isAdmin = pathname.startsWith('/admin')
+
   return (
-    <CartProvider>
+    <>
       <ScrollToTop />
-      <Navbar />
-      <CartSidebar />
+      {!isAdmin && <Navbar />}
+      {!isAdmin && <CartSidebar />}
       <Routes>
         <Route path="/"          element={<Home />} />
         <Route path="/menu"      element={<Menu />} />
         <Route path="/about"     element={<About />} />
         <Route path="/locations" element={<Locations />} />
         <Route path="/order"     element={<Order />} />
+        <Route path="/admin"     element={<Admin />} />
       </Routes>
-      <Footer />
+      {!isAdmin && <Footer />}
+    </>
+  )
+}
+
+export default function App() {
+  return (
+    <CartProvider>
+      <AppLayout />
     </CartProvider>
   )
 }

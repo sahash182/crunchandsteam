@@ -52,7 +52,27 @@ export default function Order() {
     }
   }
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = async (stripePaymentIntentId) => {
+    // Save order to DB and trigger email
+    try {
+      await fetch('/api/save-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          phone,
+          location,
+          method,
+          items,
+          subtotal: total,
+          total: taxedTotal,
+          stripePaymentIntentId,
+        }),
+      })
+    } catch (err) {
+      console.error('Failed to save order:', err)
+      // Payment already succeeded — still show confirmation
+    }
     dispatch({ type: 'CLEAR' })
     setStep(4)
   }
