@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Facebook, MapPin, Phone, Clock } from 'lucide-react'
 import logo from '../assets/logo.jpg'
+import { site } from '../data/site'
 
 const TikTokIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -36,33 +37,24 @@ export default function Footer() {
               double-fried chicken, made fresh daily in Erina, NSW.
             </p>
             <div className="flex items-center gap-3">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-white/10 rounded-full hover:bg-brand-primary transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href="https://tiktok.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-white/10 rounded-full hover:bg-brand-primary transition-colors"
-                aria-label="TikTok"
-              >
-                <TikTokIcon />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-white/10 rounded-full hover:bg-brand-primary transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook size={18} />
-              </a>
+              {[
+                { key: 'instagram', label: 'Instagram', icon: <Instagram size={18} /> },
+                { key: 'tiktok', label: 'TikTok', icon: <TikTokIcon /> },
+                { key: 'facebook', label: 'Facebook', icon: <Facebook size={18} /> },
+              ]
+                .filter(s => site.social[s.key])
+                .map(s => (
+                  <a
+                    key={s.key}
+                    href={site.social[s.key]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 bg-white/10 rounded-full hover:bg-brand-primary transition-colors"
+                    aria-label={s.label}
+                  >
+                    {s.icon}
+                  </a>
+                ))}
             </div>
           </div>
 
@@ -129,8 +121,9 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
-          <p>© 2025 Crunch & Steam. Kathmandu flavors, Australian spirit.</p>
+          <p>© {new Date().getFullYear()} Crunch & Steam. Kathmandu flavors, Australian spirit.</p>
           <div className="flex items-center gap-4">
+            <Link to="/credits" className="hover:text-white/70 transition-colors">Photo credits</Link>
             <Link to="/about" className="hover:text-white/70 transition-colors">Privacy</Link>
             <Link to="/about" className="hover:text-white/70 transition-colors">Terms</Link>
             <Link to="/about" className="hover:text-white/70 transition-colors">Accessibility</Link>

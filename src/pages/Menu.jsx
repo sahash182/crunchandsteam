@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import MenuCard from '../components/MenuCard'
 import CategoryTabs from '../components/CategoryTabs'
 import DhakaDivider from '../components/DhakaDivider'
-import { menuItems, categories } from '../data/menu'
+import { menuItems, categories } from '../data/catalog'
 
 const ALL = { id: 'all', label: 'All Items' }
 const allCategories = [ALL, ...categories]

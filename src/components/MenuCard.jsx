@@ -54,10 +54,15 @@ export default function MenuCard({ item }) {
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
           <img
             src={item.image}
-            alt={item.name}
+            alt={item.imageType === 'stock' ? `${item.name} (representative image)` : item.name}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
           />
+          {item.imageType === 'stock' && (
+            <span className="absolute bottom-1.5 right-2 text-[9px] text-white/90 bg-black/40 px-1.5 py-0.5 rounded">
+              Representative image
+            </span>
+          )}
           <PrayerFlags />
           {tag && (
             <span className={`absolute top-2 left-2 ${tag.bg} ${tag.text} text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full`}>

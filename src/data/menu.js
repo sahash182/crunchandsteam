@@ -1,3 +1,13 @@
+// THE MENU — edit dishes here. This one file drives the website menu, /menu.json,
+// and the daily social videos (CrunchMarket reads /menu.json).
+//
+// Each dish:  id (keep unique), category (from `categories`), name, description,
+//             price, spice (0-3), tag ('fan-favorite' | 'new' | 'spicy' | omit), sizes.
+// Optional:   available: false   -> hides the dish everywhere (sold out / seasonal).
+// Photos:     no image field needed — drop a photo in menu-photos/real/<dish-id>.jpg
+//             (dish id = name in lower-case with dashes, e.g. "Chilli Momo (8pc)" ->
+//             chilli-momo-8pc). See MAINTENANCE.md.
+
 export const categories = [
   { id: 'fried-chicken', label: 'Fried Chicken' },
   { id: 'steamed-momos', label: 'Steamed Momos' },
@@ -17,7 +27,6 @@ export const menuItems = [
     price: 4.99,
     spice: 2,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -28,7 +37,6 @@ export const menuItems = [
     price: 9.99,
     spice: 2,
     tag: 'new',
-    image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=600&auto=format&fit=crop&q=80',
     sizes: ['6pc', '12pc'],
   },
   {
@@ -39,7 +47,6 @@ export const menuItems = [
     price: 8.99,
     spice: 3,
     tag: 'spicy',
-    image: 'https://images.unsplash.com/photo-1624726175512-19b9baf9fbd1?w=600&auto=format&fit=crop&q=80',
     sizes: ['5pc', '10pc'],
   },
   {
@@ -50,7 +57,6 @@ export const menuItems = [
     price: 6.49,
     spice: 1,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -61,7 +67,6 @@ export const menuItems = [
     price: 5.99,
     spice: 1,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular', 'Large'],
   },
 
@@ -74,7 +79,6 @@ export const menuItems = [
     price: 10.99,
     spice: 1,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc', '16pc'],
   },
   {
@@ -85,7 +89,6 @@ export const menuItems = [
     price: 12.99,
     spice: 2,
     tag: 'new',
-    image: 'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -96,7 +99,6 @@ export const menuItems = [
     price: 9.99,
     spice: 1,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc', '16pc'],
   },
   {
@@ -107,7 +109,6 @@ export const menuItems = [
     price: 10.49,
     spice: 1,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc', '16pc'],
   },
   {
@@ -118,7 +119,6 @@ export const menuItems = [
     price: 13.99,
     spice: 1,
     tag: 'new',
-    image: 'https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&auto=format&fit=crop&q=80',
     sizes: ['6pc', '12pc'],
   },
 
@@ -131,7 +131,6 @@ export const menuItems = [
     price: 11.99,
     spice: 1,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc'],
   },
   {
@@ -142,7 +141,6 @@ export const menuItems = [
     price: 11.49,
     spice: 2,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc', '16pc'],
   },
   {
@@ -153,7 +151,6 @@ export const menuItems = [
     price: 13.49,
     spice: 2,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc'],
   },
   {
@@ -164,7 +161,6 @@ export const menuItems = [
     price: 12.99,
     spice: 2,
     tag: 'new',
-    image: 'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=600&auto=format&fit=crop&q=80',
     sizes: ['6pc', '12pc'],
   },
   {
@@ -175,7 +171,6 @@ export const menuItems = [
     price: 12.49,
     spice: 3,
     tag: 'spicy',
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80',
     sizes: ['8pc'],
   },
 
@@ -188,7 +183,6 @@ export const menuItems = [
     price: 3.99,
     spice: 1,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular', 'Large'],
   },
   {
@@ -199,7 +193,6 @@ export const menuItems = [
     price: 2.99,
     spice: 2,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -210,7 +203,6 @@ export const menuItems = [
     price: 2.49,
     spice: 0,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -221,7 +213,6 @@ export const menuItems = [
     price: 2.99,
     spice: 0,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular', 'Large'],
   },
   {
@@ -232,7 +223,6 @@ export const menuItems = [
     price: 4.49,
     spice: 1,
     tag: 'new',
-    image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
 
@@ -245,7 +235,6 @@ export const menuItems = [
     price: 4.49,
     spice: 0,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular', 'Large'],
   },
   {
@@ -256,7 +245,6 @@ export const menuItems = [
     price: 3.49,
     spice: 0,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular', 'Large'],
   },
   {
@@ -267,7 +255,6 @@ export const menuItems = [
     price: 2.99,
     spice: 0,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1523371054106-bbf80586c38c?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular', 'Large'],
   },
   {
@@ -278,7 +265,6 @@ export const menuItems = [
     price: 2.49,
     spice: 0,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=600&auto=format&fit=crop&q=80',
     sizes: ['Small', 'Medium', 'Large'],
   },
   {
@@ -289,7 +275,6 @@ export const menuItems = [
     price: 1.99,
     spice: 0,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
 
@@ -302,7 +287,6 @@ export const menuItems = [
     price: 16.99,
     spice: 1,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -313,7 +297,6 @@ export const menuItems = [
     price: 29.99,
     spice: 2,
     tag: 'fan-favorite',
-    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -324,7 +307,6 @@ export const menuItems = [
     price: 13.99,
     spice: 1,
     tag: null,
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -335,7 +317,6 @@ export const menuItems = [
     price: 54.99,
     spice: 1,
     tag: 'new',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
   {
@@ -346,11 +327,6 @@ export const menuItems = [
     price: 17.99,
     spice: 3,
     tag: 'spicy',
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80',
     sizes: ['Regular'],
   },
 ]
-
-export const signatureDishes = menuItems.filter(i =>
-  ['fc-1', 'sm-1', 'cb-1'].includes(i.id)
-)

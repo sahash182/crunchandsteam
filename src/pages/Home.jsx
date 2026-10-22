@@ -6,7 +6,7 @@ import MenuCard from '../components/MenuCard'
 import TestimonialSlider from '../components/TestimonialSlider'
 import DhakaDivider from '../components/DhakaDivider'
 import MandalaBg from '../components/MandalaBg'
-import { signatureDishes } from '../data/menu'
+import { signatureDishes, byId } from '../data/catalog'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -23,25 +23,25 @@ const categoryCards = [
     id: 'fried-chicken',
     title: 'Fried Chicken',
     subtitle: 'Double-fried, Himalayan spiced',
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80',
+    image: byId['fc-1']?.image,
   },
   {
     id: 'steamed-momos',
     title: 'Steamed Momos',
     subtitle: 'Hand-folded, daily fresh',
-    image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80',
+    image: byId['sm-1']?.image,
   },
   {
     id: 'fried-momos',
     title: 'Fried Momos',
     subtitle: 'Crispy outside, juicy inside',
-    image: 'https://images.unsplash.com/photo-1526318896980-cf78c088247c?w=600&auto=format&fit=crop&q=80',
+    image: byId['fm-2']?.image,
   },
   {
     id: 'combos',
     title: 'Combos & Feasts',
     subtitle: 'The best of both worlds',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
+    image: byId['cb-1']?.image,
   },
 ]
 
