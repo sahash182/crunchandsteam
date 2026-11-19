@@ -7,6 +7,7 @@ import TestimonialSlider from '../components/TestimonialSlider'
 import DhakaDivider from '../components/DhakaDivider'
 import MandalaBg from '../components/MandalaBg'
 import { signatureDishes, byId } from '../data/catalog'
+import { site } from '../data/site'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -18,32 +19,13 @@ const stagger = {
   show:   { transition: { staggerChildren: 0.12 } },
 }
 
+// Tiles on the home page. `dish` = the dish id (from menu.json) whose photo is shown.
 const categoryCards = [
-  {
-    id: 'fried-chicken',
-    title: 'Fried Chicken',
-    subtitle: 'Double-fried, Himalayan spiced',
-    image: byId['fc-1']?.image,
-  },
-  {
-    id: 'steamed-momos',
-    title: 'Steamed Momos',
-    subtitle: 'Hand-folded, daily fresh',
-    image: byId['sm-1']?.image,
-  },
-  {
-    id: 'fried-momos',
-    title: 'Fried Momos',
-    subtitle: 'Crispy outside, juicy inside',
-    image: byId['fm-2']?.image,
-  },
-  {
-    id: 'combos',
-    title: 'Combos & Feasts',
-    subtitle: 'The best of both worlds',
-    image: byId['cb-1']?.image,
-  },
-]
+  { id: 'fried-chicken', title: 'Crunch Fried Chicken', subtitle: 'Wings, drumsticks & tenders',     dish: 'fc-1' },
+  { id: 'momo',          title: 'Steam Momo',           subtitle: 'Steam, kothey, fried, C-momo, jhol', dish: 'mo-3' },
+  { id: 'burgers',       title: 'Signature Burger',     subtitle: 'The Crunch Burger',                dish: 'bg-1' },
+  { id: 'combos',        title: 'Crunch & Steam Combo', subtitle: '2 icons. 1 experience.',           dish: 'cb-1' },
+].map(c => ({ ...c, image: byId[c.dish]?.image }))
 
 const brandValues = [
   {
@@ -79,7 +61,7 @@ export default function Home() {
             className="text-center mb-12"
           >
             <motion.p variants={fadeUp} className="text-brand-primary font-semibold tracking-widest uppercase text-xs mb-2">
-              Our Best-Sellers
+              Start here
             </motion.p>
             <motion.h2 variants={fadeUp} className="section-heading">
               Signature Dishes
@@ -214,9 +196,10 @@ export default function Home() {
         </div>
       </section>
 
-      <DhakaDivider />
+      {site.showReviews && <DhakaDivider />}
 
-      {/* ── Testimonials ── */}
+      {/* ── Testimonials (switch in src/data/site.js: showReviews) ── */}
+      {site.showReviews && (
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -244,6 +227,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      )}
 
       <DhakaDivider />
 

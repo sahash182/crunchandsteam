@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingCart, Trash2, Minus, Plus, ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import LineDetails from './LineDetails'
+import { money, gstIncluded } from '../data/pricing'
 
 export default function CartSidebar() {
   const { isOpen, items, total, dispatch } = useCart()
@@ -59,32 +61,36 @@ export default function CartSidebar() {
                   <div className="space-y-3">
                     {items.map(item => (
                       <motion.div
-                        key={`${item.id}-${item.size}`}
+                        key={item.key}
                         layout
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
                         className="flex gap-3 items-center bg-brand-cream rounded-xl p-3"
                       >
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-14 h-14 rounded-lg object-cover shrink-0"
-                        />
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-14 h-14 rounded-lg object-cover shrink-0"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-lg bg-brand-primary/10 text-brand-primary flex items-center justify-center shrink-0" aria-hidden="true">
+                            <Plus size={20} />
+                          </div>
+                        )}
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-brand-text text-xs leading-tight truncate">
+                          <p className="font-semibold text-brand-text text-xs leading-tight">
                             {item.name}
                           </p>
-                          {item.size && (
-                            <p className="text-brand-text/40 text-[10px] mt-0.5">{item.size}</p>
-                          )}
+                          <LineDetails line={item} className="text-brand-text/50 text-[10px] leading-snug mt-0.5" />
                           <p className="text-brand-primary font-bold text-sm mt-1">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            {money(item.price * item.quantity)}
                           </p>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           <button
-                            onClick={() => dispatch({ type: 'UPDATE_QUANTITY', id: item.id, size: item.size, quantity: item.quantity - 1 })}
+                            onClick={() => dispatch({ type: 'UPDATE_QUANTITY', key: item.key, quantity: item.quantity - 1 })}
                             className="w-6 h-6 rounded-full border border-brand-dark/15 flex items-center justify-center hover:border-brand-primary transition-colors"
                             aria-label="Decrease"
                           >
@@ -92,14 +98,14 @@ export default function CartSidebar() {
                           </button>
                           <span className="w-4 text-center text-xs font-bold">{item.quantity}</span>
                           <button
-                            onClick={() => dispatch({ type: 'UPDATE_QUANTITY', id: item.id, size: item.size, quantity: item.quantity + 1 })}
+                            onClick={() => dispatch({ type: 'UPDATE_QUANTITY', key: item.key, quantity: item.quantity + 1 })}
                             className="w-6 h-6 rounded-full border border-brand-dark/15 flex items-center justify-center hover:border-brand-primary transition-colors"
                             aria-label="Increase"
                           >
                             <Plus size={10} />
                           </button>
                           <button
-                            onClick={() => dispatch({ type: 'REMOVE_ITEM', id: item.id, size: item.size })}
+                            onClick={() => dispatch({ type: 'REMOVE_ITEM', key: item.key })}
                             className="w-6 h-6 ml-0.5 rounded-full flex items-center justify-center text-red-400 hover:bg-red-50 transition-colors"
                             aria-label="Remove"
                           >
@@ -117,15 +123,16 @@ export default function CartSidebar() {
             {items.length > 0 && (
               <div className="p-5 border-t border-brand-dark/10 space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-brand-text/60">Subtotal</span>
-                  <span className="font-bold text-brand-dark">${total.toFixed(2)}</span>
+                  <span className="text-brand-text/60">Total (incl. GST)</span>
+                  <span className="font-bold text-brand-dark">{money(total)}</span>
                 </div>
+                <p className="text-[11px] text-brand-text/40 -mt-1">Includes GST of {money(gstIncluded(total))}</p>
                 <Link
                   to="/order"
                   onClick={() => dispatch({ type: 'CLOSE_CART' })}
                   className="btn-primary w-full flex items-center justify-center gap-2 text-base"
                 >
-                  Checkout · ${(total * 1.0825).toFixed(2)} <ChevronRight size={16} />
+                  Checkout · {money(total)} <ChevronRight size={16} />
                 </Link>
               </div>
             )}

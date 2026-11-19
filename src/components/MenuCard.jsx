@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Flame, Plus } from 'lucide-react'
 import OrderModal from './OrderModal'
+import { money, shortLabel } from '../data/pricing'
 
 const TAG_STYLES = {
   'fan-favorite': { bg: 'bg-brand-primary',    text: 'text-white',          label: 'Fan Fave'  },
@@ -41,6 +42,12 @@ function SpiceLevel({ level }) {
 export default function MenuCard({ item }) {
   const [modalOpen, setModalOpen] = useState(false)
   const tag = item.tag ? TAG_STYLES[item.tag] : null
+  const hasChoices = item.options.length > 0
+  const hasSpiceChoice = item.options.some(o => o.id === 'spice')
+  const choiceHint = hasChoices
+    ? item.options.slice(0, 2).map(o => shortLabel(o.label)).join(' · ') +
+      (item.options.length > 2 ? ` +${item.options.length - 2}` : '')
+    : null
 
   return (
     <>
@@ -69,6 +76,11 @@ export default function MenuCard({ item }) {
               {tag.label}
             </span>
           )}
+          {item.portion && (
+            <span className="absolute bottom-1.5 left-2 text-[11px] font-bold text-white bg-brand-dark/80 px-2 py-0.5 rounded-full">
+              {item.portion}
+            </span>
+          )}
         </div>
 
         {/* Content */}
@@ -78,23 +90,30 @@ export default function MenuCard({ item }) {
               {item.name}
             </h3>
             <span className="text-brand-primary font-bold text-base shrink-0">
-              ${item.price.toFixed(2)}
+              {money(item.price)}
             </span>
           </div>
 
           <SpiceLevel level={item.spice} />
 
-          <p className="text-brand-text/60 text-xs leading-relaxed mt-2 flex-1 line-clamp-2">
+          <p className="text-brand-text/60 text-xs leading-relaxed mt-2 flex-1 line-clamp-3">
             {item.description}
           </p>
 
+          {choiceHint && (
+            <p className="flex items-center gap-1 text-[11px] font-semibold text-brand-primary mt-3">
+              {hasSpiceChoice && <Flame size={12} fill="currentColor" aria-hidden="true" />}
+              Choose: {choiceHint}
+            </p>
+          )}
+
           <button
             onClick={() => setModalOpen(true)}
-            className="mt-4 w-full flex items-center justify-center gap-2 bg-brand-cream border border-brand-primary/30 text-brand-primary font-semibold text-sm py-2.5 rounded-xl hover:bg-brand-primary hover:text-white transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            aria-label={`Add ${item.name} to order`}
+            className="mt-3 w-full flex items-center justify-center gap-2 bg-brand-cream border border-brand-primary/30 text-brand-primary font-semibold text-sm py-2.5 rounded-xl hover:bg-brand-primary hover:text-white transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-primary"
+            aria-label={`${hasChoices ? 'Customise and add' : 'Add'} ${item.name} to order`}
           >
             <Plus size={16} />
-            Add to Order
+            {hasChoices ? 'Customise & Add' : 'Add to Order'}
           </button>
         </div>
       </motion.article>

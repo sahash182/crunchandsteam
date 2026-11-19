@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Facebook, MapPin, Phone, Clock } from 'lucide-react'
 import logo from '../assets/logo.jpg'
+import { categories } from '../data/catalog'
 import { site } from '../data/site'
 
 const TikTokIcon = () => (
@@ -33,8 +34,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-5">
-              Himalayan tradition meets golden perfection. Hand-folded momos and
-              double-fried chicken, made fresh daily in Erina, NSW.
+              Crunchy fried chicken. Steamy momo. Bold Nepalese flavours.
+              Find us at Erina Fair, Central Coast NSW.
             </p>
             <div className="flex items-center gap-3">
               {[
@@ -62,10 +63,10 @@ export default function Footer() {
           <div>
             <h3 className="font-serif font-bold text-base mb-4 text-brand-warm">Menu</h3>
             <ul className="space-y-2 text-sm text-white/60">
-              {['Fried Chicken', 'Steamed Momos', 'Fried Momos', 'Combos & Feasts', 'Sides', 'Drinks'].map(item => (
-                <li key={item}>
-                  <Link to="/menu" className="hover:text-brand-warm transition-colors">
-                    {item}
+              {categories.map(cat => (
+                <li key={cat.id}>
+                  <Link to="/menu" state={{ category: cat.id }} className="hover:text-brand-warm transition-colors">
+                    {cat.label}
                   </Link>
                 </li>
               ))}

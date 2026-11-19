@@ -1,0 +1,320 @@
+{
+  "categories": [
+    {
+      "id": "fried-chicken",
+      "label": "Crunch Fried Chicken",
+      "blurb": "Served with Nepalese seasoned fries & achar.",
+      "addons": [
+        "extra-fries",
+        "extra-achar",
+        "extra-sauce"
+      ]
+    },
+    {
+      "id": "momo",
+      "label": "Steam Momo",
+      "blurb": "Pick your filling, then choose how we cook it.",
+      "addons": [
+        "extra-achar",
+        "extra-sauce"
+      ]
+    },
+    {
+      "id": "burgers",
+      "label": "Signature Burger",
+      "blurb": "Crunchy fried chicken in a brioche milk bun.",
+      "addons": [
+        "extra-fries",
+        "cheese-slice",
+        "extra-sauce",
+        "extra-achar"
+      ]
+    },
+    {
+      "id": "kids",
+      "label": "Kids Meal",
+      "blurb": "Every kids meal includes 1 small drink.",
+      "addons": []
+    },
+    {
+      "id": "combos",
+      "label": "Combo",
+      "blurb": "2 icons. 1 experience.",
+      "addons": [
+        "extra-fries",
+        "extra-achar",
+        "extra-sauce"
+      ]
+    },
+    {
+      "id": "drinks",
+      "label": "Drinks",
+      "blurb": "",
+      "addons": []
+    }
+  ],
+  "optionSets": {
+    "spice": {
+      "label": "Choose your spice",
+      "choices": [
+        "Mild",
+        "Medium",
+        "Hot",
+        "Very Hot",
+        "Himalayan Fire"
+      ]
+    },
+    "style": {
+      "label": "Choose your style",
+      "choices": [
+        "Steam",
+        "Kothey",
+        "Fried",
+        "C-Momo",
+        "Jhol"
+      ]
+    },
+    "filling": {
+      "label": "Choose your momo filling",
+      "choices": [
+        "Chicken",
+        "Pork",
+        "Veg"
+      ]
+    },
+    "kids-filling": {
+      "label": "Choose a filling",
+      "choices": [
+        "Chicken",
+        "Veg"
+      ]
+    },
+    "kids-drink": {
+      "label": "Choose a small drink",
+      "choices": [
+        "Juice Box",
+        "Soft Drink Can"
+      ]
+    },
+    "can": {
+      "label": "Choose your can",
+      "choices": [
+        "Coca-Cola",
+        "Sprite"
+      ]
+    }
+  },
+  "addons": [
+    {
+      "id": "extra-fries",
+      "name": "Extra Fries",
+      "price": 5
+    },
+    {
+      "id": "extra-achar",
+      "name": "Extra Achar",
+      "price": 2
+    },
+    {
+      "id": "extra-sauce",
+      "name": "Extra Sauce",
+      "price": 1.5
+    },
+    {
+      "id": "cheese-slice",
+      "name": "Cheese Slice",
+      "price": 2
+    }
+  ],
+  "items": [
+    {
+      "id": "fc-1",
+      "slug": "fried-chicken-wings",
+      "category": "fried-chicken",
+      "name": "Fried Chicken Wings",
+      "description": "Crunchy fried chicken wings, Nepalese seasoned. Served with fries & achar.",
+      "price": 16,
+      "portion": "4 pcs",
+      "options": [
+        {
+          "set": "spice"
+        }
+      ]
+    },
+    {
+      "id": "fc-2",
+      "slug": "fried-chicken-drumsticks",
+      "category": "fried-chicken",
+      "name": "Fried Chicken Drumsticks",
+      "description": "Crunchy fried chicken drumsticks, Nepalese seasoned. Served with fries & achar.",
+      "price": 18,
+      "portion": "4 pcs",
+      "options": [
+        {
+          "set": "spice"
+        }
+      ]
+    },
+    {
+      "id": "fc-3",
+      "slug": "fried-chicken-tenders",
+      "category": "fried-chicken",
+      "name": "Fried Chicken Tenders",
+      "description": "Crunchy fried chicken tenders, Nepalese seasoned. Served with fries & achar.",
+      "price": 16,
+      "portion": "4 pcs",
+      "options": [
+        {
+          "set": "spice"
+        }
+      ]
+    },
+    {
+      "id": "mo-1",
+      "slug": "veg-momo",
+      "category": "momo",
+      "name": "Veg Momo",
+      "description": "Veg momo your way: steam, kothey, fried, C-momo or jhol.",
+      "price": 15.5,
+      "options": [
+        {
+          "set": "style"
+        }
+      ]
+    },
+    {
+      "id": "mo-2",
+      "slug": "pork-momo",
+      "category": "momo",
+      "name": "Pork Momo",
+      "description": "Pork momo your way: steam, kothey, fried, C-momo or jhol.",
+      "price": 16.9,
+      "options": [
+        {
+          "set": "style"
+        }
+      ]
+    },
+    {
+      "id": "mo-3",
+      "slug": "chicken-momo",
+      "category": "momo",
+      "name": "Chicken Momo",
+      "description": "Chicken momo your way: steam, kothey, fried, C-momo or jhol.",
+      "price": 16.9,
+      "options": [
+        {
+          "set": "style"
+        }
+      ]
+    },
+    {
+      "id": "bg-1",
+      "slug": "crunch-burger",
+      "category": "burgers",
+      "name": "Crunch Burger",
+      "description": "Nepalese spicy fried chicken thigh, lettuce, secret sauce and cheese in a brioche milk bun. Served with Nepalese seasoned fries.",
+      "price": 17.9,
+      "options": [
+        {
+          "set": "spice"
+        }
+      ]
+    },
+    {
+      "id": "kd-1",
+      "slug": "kids-momo",
+      "category": "kids",
+      "name": "Kids Momo",
+      "description": "5 momo with 1 small drink (juice box or soft drink can).",
+      "price": 10,
+      "portion": "5 pcs",
+      "options": [
+        {
+          "set": "kids-filling"
+        },
+        {
+          "set": "kids-drink"
+        }
+      ]
+    },
+    {
+      "id": "kd-2",
+      "slug": "kids-chicken-tenders",
+      "category": "kids",
+      "name": "Kids Chicken Tenders",
+      "description": "Chicken tenders with 1 small drink (juice box or soft drink can).",
+      "price": 10,
+      "options": [
+        {
+          "set": "kids-drink"
+        }
+      ]
+    },
+    {
+      "id": "cb-1",
+      "slug": "crunch-and-steam-combo",
+      "category": "combos",
+      "name": "Crunch & Steam Combo",
+      "description": "12 pcs bucket wings, fries, 10 pcs momo and 2 drinks of your choice.",
+      "price": 36,
+      "includes": [
+        "12 pcs bucket wings",
+        "Fries",
+        "10 pcs momo",
+        "2 drinks of your choice"
+      ],
+      "options": [
+        {
+          "set": "spice",
+          "label": "Choose your wing spice"
+        },
+        {
+          "set": "filling"
+        },
+        {
+          "set": "style"
+        },
+        {
+          "set": "can",
+          "id": "drink1",
+          "label": "Drink 1"
+        },
+        {
+          "set": "can",
+          "id": "drink2",
+          "label": "Drink 2"
+        }
+      ]
+    },
+    {
+      "id": "dr-1",
+      "slug": "soft-drink-can",
+      "category": "drinks",
+      "name": "Soft Drink (Can)",
+      "description": "Soft drink can.",
+      "price": 3,
+      "options": [
+        {
+          "set": "can"
+        }
+      ]
+    },
+    {
+      "id": "dr-2",
+      "slug": "lemon-soda",
+      "category": "drinks",
+      "name": "Lemon Soda",
+      "description": "Lemon soda.",
+      "price": 4
+    },
+    {
+      "id": "dr-3",
+      "slug": "nepali-milk-tea",
+      "category": "drinks",
+      "name": "Nepali Milk Tea",
+      "description": "Nepali milk tea.",
+      "price": 4
+    }
+  ]
+}

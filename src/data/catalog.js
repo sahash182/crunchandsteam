@@ -1,21 +1,25 @@
-// The menu as the website uses it: menu.js + photo info from menu-photos/.
-// Pages and components import from here, not from menu.js directly.
+// The menu as the website uses it: menu.json (checked by model.js) + photo info from menu-photos/.
+// Pages and components import from here, not from menu.json directly.
 import photos from 'virtual:menu-photos'
-import { menuItems as rawItems, categories } from './menu'
-import { slugify } from './slug'
+import rawMenu from './menu.json'
+import { buildMenu } from './model'
 
-export { categories }
+// The checked menu (also what pricing.js prices orders against). The build plugin has
+// already failed with a readable message if menu.json has problems.
+export const menu = buildMenu(rawMenu)
+
+export const categories = menu.categories
+export const addons = menu.addons
+export const addonById = menu.addonById
 
 export const PLACEHOLDER_IMAGE = '/images/placeholder-dish.jpg'
 
-export const menuItems = rawItems
-  .filter(item => item.available !== false)
+export const menuItems = menu.items
+  .filter(item => item.available)
   .map(item => {
-    const slug = slugify(item.name)
-    const photo = photos[slug] ?? { type: 'none' }
+    const photo = photos[item.slug] ?? { type: 'none' }
     return {
       ...item,
-      slug,
       image: photo.thumb ?? PLACEHOLDER_IMAGE,
       imageFull: photo.full ?? PLACEHOLDER_IMAGE,
       imageType: photo.type, // 'real' | 'stock' | 'none'
@@ -25,7 +29,8 @@ export const menuItems = rawItems
 
 export const byId = Object.fromEntries(menuItems.map(i => [i.id, i]))
 
-export const signatureDishes = ['fc-1', 'sm-1', 'cb-1'].map(id => byId[id]).filter(Boolean)
+// Dishes featured on the home page (dish ids from menu.json).
+export const signatureDishes = ['fc-1', 'mo-3', 'cb-1'].map(id => byId[id]).filter(Boolean)
 
 // Stand-in photos that need a credit on /credits.
 export const photoCredits = menuItems

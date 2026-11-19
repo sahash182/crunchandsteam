@@ -1,4 +1,4 @@
-// Turns src/data/menu.js + menu-photos/ into:
+// Turns src/data/menu.json + menu-photos/ into:
 //   /images/menu/thumb/<id>.jpg   600px wide  (website menu cards)
 //   /images/menu/full/<id>.jpg    1600px max  (CrunchMarket videos)
 //   /menu.json                    the menu for CrunchMarket and anything else
@@ -21,15 +21,17 @@ const RESOLVED = '\0' + VIRTUAL
 
 export default function menuData({ root = process.cwd() } = {}) {
   const photosDir = path.join(root, 'menu-photos')
-  const menuFile = path.join(root, 'src', 'data', 'menu.js')
-  const slugFile = path.join(root, 'src', 'data', 'slug.js')
+  const menuFile = path.join(root, 'src', 'data', 'menu.json')
+  const modelFile = path.join(root, 'src', 'data', 'model.js')
   let server
 
+  // Reads menu.json, checks it (plain-English error if something is wrong) and normalises it.
   async function loadMenu() {
-    const bust = `?t=${Date.now()}` // re-read after edits in dev
-    const { menuItems, categories } = await import(pathToFileURL(menuFile).href + bust)
-    const { slugify } = await import(pathToFileURL(slugFile).href)
-    return { menuItems, categories, slugify }
+    const raw = JSON.parse(fs.readFileSync(menuFile, 'utf8')) // fresh read: edits show up in dev
+    const { buildMenu, assertValid } = await import(pathToFileURL(modelFile).href + `?t=${Date.now()}`)
+    const menu = buildMenu(raw)
+    assertValid(menu)
+    return menu
   }
 
   function findPhoto(id) {
@@ -48,16 +50,16 @@ export default function menuData({ root = process.cwd() } = {}) {
   }
 
   async function catalog() {
-    const { menuItems, categories, slugify } = await loadMenu()
+    const { items: dishes, categories, addons } = await loadMenu()
     const credits = readCredits()
     const catLabel = Object.fromEntries(categories.map(c => [c.id, c.label]))
-    const items = menuItems.map(item => {
-      const id = slugify(item.name)
+    const items = dishes.map(item => {
+      const id = item.slug
       const photo = findPhoto(id)
       const credit = photo?.kind === 'stock' ? credits[id] ?? null : null
       return { item, id, photo, credit, category: catLabel[item.category] ?? item.category }
     })
-    return { items, categories }
+    return { items, categories, addons }
   }
 
   function photoInfo(entry) {
@@ -70,27 +72,38 @@ export default function menuData({ root = process.cwd() } = {}) {
     }
   }
 
-  function menuJson({ items, categories }) {
+  // /menu.json — a public contract with CrunchMarket. Existing fields never change meaning
+  // (it reads id, name, description, price, category, badges, spice_level, available, image_*);
+  // new fields are only ever ADDED, and add-ons live in their own list so they are never
+  // mistaken for dishes to feature in a video.
+  function menuJson({ items, categories, addons }) {
     return {
       restaurant: 'Crunch & Steam',
       currency: 'AUD',
+      prices_include_gst: true,
       generated_at: new Date().toISOString(),
-      categories: categories.map(c => ({ id: c.id, label: c.label })),
+      categories: categories.map(c => ({ id: c.id, label: c.label, blurb: c.blurb })),
       items: items.map(({ item, id, photo, credit, category }) => ({
         id,
         site_id: item.id,
         name: item.name,
         description: item.description,
-        price: item.price,
+        price: item.price, // base price; some dishes let the customer pay extra for choices/add-ons
         category,
         badges: item.tag && BADGES[item.tag] ? [BADGES[item.tag]] : [],
-        spice_level: item.spice ?? 0,
-        sizes: item.sizes ?? [],
-        available: item.available !== false,
+        spice_level: item.spice ?? 0, // fixed heat 0-3; 0 when the customer chooses (see options)
+        sizes: [],
+        available: item.available,
         image_url: photo ? `/images/menu/full/${id}.jpg` : null,
         image_type: photo ? photo.kind : 'none',
         image_credit: credit,
+        // ── added for the new menu (CrunchMarket ignores unknown fields) ──
+        portion: item.portion,
+        includes: item.includes,
+        options: item.options, // [{id, label, required, choices:[{label, price}]}]; id 'spice' = heat
+        addon_ids: item.addonIds,
       })),
+      addons: addons.map(a => ({ id: a.id, name: a.name, price: a.price })),
     }
   }
 
@@ -139,10 +152,13 @@ export default function menuData({ root = process.cwd() } = {}) {
         }
         next()
       })
-      // Dropping a new photo in menu-photos/ refreshes the page.
+      // Dropping a new photo in menu-photos/, or saving menu.json, refreshes the page.
+      const norm = p => p.split(path.sep).join('/')
       s.watcher.add(photosDir)
+      s.watcher.add(menuFile)
       s.watcher.on('all', (_event, file) => {
-        if (file.startsWith(photosDir)) {
+        const f = norm(file)
+        if (f.startsWith(norm(photosDir)) || f === norm(menuFile)) {
           const mod = s.moduleGraph.getModuleById(RESOLVED)
           if (mod) s.moduleGraph.invalidateModule(mod)
           s.ws.send({ type: 'full-reload' })

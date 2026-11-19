@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { RefreshCw, LogOut, Clock, CheckCircle, ChefHat, Package, Lock } from 'lucide-react'
+import { RefreshCw, LogOut, Clock, CheckCircle, ChefHat, Package, Lock, ClipboardList, UtensilsCrossed } from 'lucide-react'
+import MenuEditor from '../components/MenuEditor'
 
 const STATUS_CONFIG = {
   pending:    { label: 'Pending',    color: 'bg-yellow-100 text-yellow-800 border-yellow-200',  dot: 'bg-yellow-400',  icon: Clock },
@@ -56,11 +57,19 @@ function OrderCard({ order, adminPassword, onStatusChange }) {
       </div>
 
       {/* Items */}
-      <div className="bg-brand-cream rounded-xl p-3 mb-3 space-y-1">
+      <div className="bg-brand-cream rounded-xl p-3 mb-3 space-y-2">
         {order.items?.map((item, i) => (
-          <div key={i} className="flex justify-between text-xs">
-            <span className="text-brand-text/70">{item.name}{item.size ? ` (${item.size})` : ''}</span>
-            <span className="font-semibold text-brand-text">×{item.quantity}</span>
+          <div key={i} className="text-xs">
+            <div className="flex justify-between gap-2">
+              <span className="font-semibold text-brand-text">{item.name}{item.size ? ` (${item.size})` : ''}</span>
+              <span className="font-bold text-brand-text shrink-0">×{item.quantity}</span>
+            </div>
+            {item.options?.length > 0 && (
+              <p className="text-brand-text/60 mt-0.5">{item.options.map(o => `${o.label}: ${o.value}`).join(' · ')}</p>
+            )}
+            {item.addons?.length > 0 && (
+              <p className="text-brand-primary mt-0.5">+ {item.addons.map(a => a.name).join(', ')}</p>
+            )}
           </div>
         ))}
       </div>
@@ -89,13 +98,23 @@ function OrderCard({ order, adminPassword, onStatusChange }) {
   )
 }
 
+// Keeps staff signed in across a page refresh (cleared when the browser tab is closed).
+const keep = {
+  get: k => { try { return sessionStorage.getItem(k) } catch { return null } },
+  set: (k, v) => { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k) } catch { /* private mode */ } },
+}
+
 export default function Admin() {
-  const [password, setPassword]     = useState('')
+  const [password, setPassword]     = useState(() => keep.get('cs-admin') ?? '')
   const [input, setInput]           = useState('')
   const [orders, setOrders]         = useState([])
   const [loading, setLoading]       = useState(false)
   const [error, setError]           = useState(null)
   const [lastRefresh, setLastRefresh] = useState(null)
+  const [tab, setTab]           = useState(() => keep.get('cs-admin-tab') ?? 'orders') // 'orders' | 'menu'
+
+  useEffect(() => { keep.set('cs-admin', password) }, [password])
+  useEffect(() => { keep.set('cs-admin-tab', tab) }, [tab])
 
   const fetchOrders = useCallback(async (pwd) => {
     setLoading(true)
@@ -110,6 +129,11 @@ export default function Admin() {
         return
       }
       const data = await res.json()
+      if (!res.ok || !Array.isArray(data)) {
+        // e.g. the database is unreachable: show a message instead of crashing the page
+        setError(`Orders could not be loaded${data?.error ? ` (${data.error})` : ''}.`)
+        return
+      }
       setOrders(data)
       setLastRefresh(new Date())
     } catch {
@@ -200,6 +224,29 @@ export default function Admin() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="bg-brand-dark px-4 sm:px-6 flex gap-1 border-t border-white/10" role="tablist">
+        {[
+          { id: 'orders', label: 'Orders', icon: ClipboardList },
+          { id: 'menu',   label: 'Menu',   icon: UtensilsCrossed },
+        ].map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            role="tab"
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
+            className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
+              tab === id ? 'border-brand-primary text-white' : 'border-transparent text-white/50 hover:text-white/80'
+            }`}
+          >
+            <Icon size={15} /> {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'menu' ? (
+        <MenuEditor password={password} />
+      ) : (
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-4 mb-8">
@@ -224,7 +271,14 @@ export default function Admin() {
           <div className="text-center py-12 text-brand-text/40">Loading orders…</div>
         )}
 
-        {!loading && activeOrders.length === 0 && (
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-2xl px-4 py-3 mb-4">
+            <p className="font-bold">{error}</p>
+            <p className="text-xs mt-1 opacity-80">New orders may not be showing. Check that the Supabase project is running (free projects pause after a week of no use), then press refresh.</p>
+          </div>
+        )}
+
+        {!loading && !error && activeOrders.length === 0 && (
           <div className="text-center py-12 bg-white rounded-2xl border border-brand-dark/5">
             <p className="text-brand-text/40 text-sm">No active orders right now.</p>
           </div>
@@ -260,6 +314,7 @@ export default function Admin() {
           </>
         )}
       </div>
+      )}
     </div>
   )
 }

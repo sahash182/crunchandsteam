@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { ShoppingCart, Trash2, Plus, Minus, CheckCircle, ChevronRight, MapPin, CreditCard } from 'lucide-react'
-import { useCart } from '../context/CartContext'
+import { useCart, toApiLines } from '../context/CartContext'
+import LineDetails from '../components/LineDetails'
+import { money, gstIncluded } from '../data/pricing'
 import DhakaDivider from '../components/DhakaDivider'
 import MandalaBg from '../components/MandalaBg'
 import PaymentForm from '../components/PaymentForm'
@@ -30,7 +32,11 @@ export default function Order() {
   const [loadingIntent, setLoadingIntent] = useState(false)
   const [intentError, setIntentError] = useState(null)
 
-  const taxedTotal = total * 1.1  // 10% GST
+  // Menu prices include GST, so the charge is exactly the cart total. The server re-prices the
+  // order itself and tells us the amount it will charge (chargeTotal).
+  const [chargeTotal, setChargeTotal] = useState(null)
+  const payTotal = chargeTotal ?? total
+  const gst = gstIncluded(payTotal)
 
   const handleContinueToPayment = async () => {
     setLoadingIntent(true)
@@ -39,11 +45,12 @@ export default function Order() {
       const res = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: taxedTotal }),
+        body: JSON.stringify({ lines: toApiLines(items) }),
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
       setClientSecret(data.clientSecret)
+      setChargeTotal(data.total)
       setStep(3)
     } catch (err) {
       setIntentError(err.message)
@@ -63,9 +70,7 @@ export default function Order() {
           phone,
           location,
           method,
-          items,
-          subtotal: total,
-          total: taxedTotal,
+          lines: toApiLines(items),
           stripePaymentIntentId,
         }),
       })
@@ -172,24 +177,28 @@ export default function Order() {
                     <AnimatePresence>
                       {items.map(item => (
                         <motion.div
-                          key={`${item.id}-${item.size}`}
+                          key={item.key}
                           layout
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20, height: 0 }}
                           className="bg-white rounded-2xl p-4 flex gap-4 items-center shadow-sm border border-brand-dark/5"
                         >
-                          <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                          {item.image ? (
+                            <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                          ) : (
+                            <div className="w-16 h-16 rounded-xl bg-brand-primary/10 text-brand-primary flex items-center justify-center shrink-0" aria-hidden="true"><Plus size={22} /></div>
+                          )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-brand-text text-sm truncate">{item.name}</p>
-                            {item.size && <p className="text-brand-text/40 text-xs mt-0.5">{item.size}</p>}
-                            <p className="text-brand-primary font-bold text-sm mt-1">${(item.price * item.quantity).toFixed(2)}</p>
+                            <p className="font-semibold text-brand-text text-sm">{item.name}</p>
+                            <LineDetails line={item} className="text-brand-text/50 text-xs leading-snug mt-0.5" />
+                            <p className="text-brand-primary font-bold text-sm mt-1">{money(item.price * item.quantity)}</p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <button onClick={() => dispatch({ type: 'UPDATE_QUANTITY', id: item.id, size: item.size, quantity: item.quantity - 1 })} className="w-7 h-7 rounded-full border border-brand-dark/15 flex items-center justify-center hover:border-brand-primary transition-colors" aria-label="Decrease"><Minus size={12} /></button>
+                            <button onClick={() => dispatch({ type: 'UPDATE_QUANTITY', key: item.key, quantity: item.quantity - 1 })} className="w-7 h-7 rounded-full border border-brand-dark/15 flex items-center justify-center hover:border-brand-primary transition-colors" aria-label="Decrease"><Minus size={12} /></button>
                             <span className="w-5 text-center text-sm font-bold">{item.quantity}</span>
-                            <button onClick={() => dispatch({ type: 'UPDATE_QUANTITY', id: item.id, size: item.size, quantity: item.quantity + 1 })} className="w-7 h-7 rounded-full border border-brand-dark/15 flex items-center justify-center hover:border-brand-primary transition-colors" aria-label="Increase"><Plus size={12} /></button>
-                            <button onClick={() => dispatch({ type: 'REMOVE_ITEM', id: item.id, size: item.size })} className="w-7 h-7 rounded-full flex items-center justify-center text-red-400 hover:bg-red-50 transition-colors ml-1" aria-label="Remove"><Trash2 size={13} /></button>
+                            <button onClick={() => dispatch({ type: 'UPDATE_QUANTITY', key: item.key, quantity: item.quantity + 1 })} className="w-7 h-7 rounded-full border border-brand-dark/15 flex items-center justify-center hover:border-brand-primary transition-colors" aria-label="Increase"><Plus size={12} /></button>
+                            <button onClick={() => dispatch({ type: 'REMOVE_ITEM', key: item.key })} className="w-7 h-7 rounded-full flex items-center justify-center text-red-400 hover:bg-red-50 transition-colors ml-1" aria-label="Remove"><Trash2 size={13} /></button>
                           </div>
                         </motion.div>
                       ))}
@@ -204,14 +213,11 @@ export default function Order() {
                   {/* Summary */}
                   <div className="bg-white rounded-2xl p-6 shadow-sm border border-brand-dark/5 h-fit sticky top-24">
                     <h3 className="font-serif font-bold text-brand-dark text-lg mb-4">Order Summary</h3>
-                    <div className="space-y-2 text-sm mb-4">
-                      <div className="flex justify-between text-brand-text/60"><span>Subtotal</span><span>${total.toFixed(2)}</span></div>
-                      <div className="flex justify-between text-brand-text/60"><span>GST (10%)</span><span>${(total * 0.1).toFixed(2)}</span></div>
-                    </div>
                     <div className="border-t border-brand-dark/10 pt-3 mb-5">
                       <div className="flex justify-between font-bold text-brand-dark">
-                        <span>Total</span><span>${taxedTotal.toFixed(2)}</span>
+                        <span>Total</span><span>{money(total)}</span>
                       </div>
+                      <p className="text-xs text-brand-text/50 mt-1">Includes GST of {money(gstIncluded(total))}</p>
                     </div>
                     <button onClick={() => setStep(2)} className="btn-primary w-full flex items-center justify-center gap-2">
                       Continue <ChevronRight size={16} />
@@ -267,16 +273,20 @@ export default function Order() {
                 <h3 className="font-serif font-bold text-brand-dark text-lg mb-4">Summary</h3>
                 <div className="space-y-1 text-xs text-brand-text/60 mb-4">
                   {items.map(i => (
-                    <div key={`${i.id}-${i.size}`} className="flex justify-between">
-                      <span>{i.name} ×{i.quantity}</span>
-                      <span>${(i.price * i.quantity).toFixed(2)}</span>
+                    <div key={i.key} className="flex justify-between gap-2">
+                      <div className="min-w-0">
+                        <span>{i.name} ×{i.quantity}</span>
+                        <LineDetails line={i} className="text-[11px] text-brand-text/40 leading-snug" />
+                      </div>
+                      <span className="shrink-0">{money(i.price * i.quantity)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="border-t border-brand-dark/10 pt-3 mb-5">
                   <div className="flex justify-between font-bold text-brand-dark text-sm">
-                    <span>Total (inc. GST)</span><span>${taxedTotal.toFixed(2)}</span>
+                    <span>Total (inc. GST)</span><span>{money(total)}</span>
                   </div>
+                  <p className="text-[11px] text-brand-text/40 mt-0.5">Includes GST of {money(gstIncluded(total))}</p>
                 </div>
 
                 {intentError && (
@@ -308,7 +318,7 @@ export default function Order() {
                 <h2 className="font-serif font-bold text-brand-dark text-xl mb-5">Payment</h2>
                 <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
                   <PaymentForm
-                    total={taxedTotal}
+                    total={payTotal}
                     onSuccess={handlePaymentSuccess}
                     onBack={() => setStep(2)}
                   />
@@ -320,16 +330,20 @@ export default function Order() {
                 <h3 className="font-serif font-bold text-brand-dark text-lg mb-4">Summary</h3>
                 <div className="space-y-1 text-xs text-brand-text/60 mb-4">
                   {items.map(i => (
-                    <div key={`${i.id}-${i.size}`} className="flex justify-between">
-                      <span>{i.name} ×{i.quantity}</span>
-                      <span>${(i.price * i.quantity).toFixed(2)}</span>
+                    <div key={i.key} className="flex justify-between gap-2">
+                      <div className="min-w-0">
+                        <span>{i.name} ×{i.quantity}</span>
+                        <LineDetails line={i} className="text-[11px] text-brand-text/40 leading-snug" />
+                      </div>
+                      <span className="shrink-0">{money(i.price * i.quantity)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="border-t border-brand-dark/10 pt-3">
                   <div className="flex justify-between font-bold text-brand-dark text-sm">
-                    <span>Total (inc. GST)</span><span>${taxedTotal.toFixed(2)}</span>
+                    <span>Total (inc. GST)</span><span>{money(payTotal)}</span>
                   </div>
+                  <p className="text-[11px] text-brand-text/40 mt-0.5">Includes GST of {money(gst)}</p>
                 </div>
                 <div className="mt-4 text-xs text-brand-text/50 space-y-0.5">
                   <p><span className="font-semibold">Location:</span> {location}</p>

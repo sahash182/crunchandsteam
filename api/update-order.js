@@ -1,12 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
+import { isAdmin } from '../server/auth.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const password = req.headers['x-admin-password']
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (!isAdmin(req)) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
