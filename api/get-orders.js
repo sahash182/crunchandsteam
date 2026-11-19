@@ -10,18 +10,28 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-  )
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    return res.status(500).json({ error: 'SUPABASE_URL or SUPABASE_SERVICE_KEY is missing in Vercel environment variables.' })
+  }
 
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(100)
+  try {
+    const supabase = createClient(
+      process.env.SUPABASE_URL.trim(),
+      process.env.SUPABASE_SERVICE_KEY.trim()
+    )
 
-  if (error) return res.status(500).json({ error: error.message })
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100)
 
-  res.status(200).json(data)
+    if (error) return res.status(500).json({ error: error.message })
+
+    res.status(200).json(data)
+  } catch (err) {
+    // Never crash the function: say what went wrong (no secrets in this message).
+    console.error('get-orders failed:', err)
+    res.status(500).json({ error: `Could not connect to the database: ${err.message}` })
+  }
 }
