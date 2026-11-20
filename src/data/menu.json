@@ -293,7 +293,7 @@
       "category": "drinks",
       "name": "Soft Drink (Can)",
       "description": "Soft drink can.",
-      "price": 3,
+      "price": 3.1,
       "options": [
         {
           "set": "can"
