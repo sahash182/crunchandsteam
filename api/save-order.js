@@ -97,9 +97,11 @@ export default async function handler(req, res) {
       </div>`
 
   // 4. Kitchen email. A failure here must not fail the order (it is already saved).
+  let emailed = false
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const ownerEmail = process.env.OWNER_EMAIL || 'sahashsainju7@gmail.com'
+    const ownerEmail = process.env.OWNER_EMAIL
+    if (!ownerEmail) throw new Error('OWNER_EMAIL is not set in Vercel: no kitchen alert was sent')
 
     const itemRows = items
       .map(i => {
@@ -118,7 +120,8 @@ export default async function handler(req, res) {
       })
       .join('')
 
-    await resend.emails.send({
+    // Resend reports problems (unverified domain, bad address, bad key) in `error`; it does not throw.
+    const { error: sendError } = await resend.emails.send({
       from: 'Crunch & Steam Orders <onboarding@resend.dev>',
       to: ownerEmail,
       subject: `${saved ? '🧾' : '⚠️ NOT SAVED —'} New Order — ${name} · ${money(paid)}`,
@@ -159,9 +162,11 @@ export default async function handler(req, res) {
         </div>
       `,
     })
+    if (sendError) throw new Error(`${sendError.name}: ${sendError.message}`)
+    emailed = true
   } catch (emailErr) {
     console.error('Email error:', emailErr)
   }
 
-  res.status(200).json({ orderId: saved ? order.id : null, saved })
+  res.status(200).json({ orderId: saved ? order.id : null, saved, emailed })
 }
